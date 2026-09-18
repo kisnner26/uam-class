@@ -1,0 +1,136 @@
+name: UAMClassiOS
+options:
+  bundleIdPrefix: com.kisito
+  deploymentTarget:
+    iOS: "17.0"
+    watchOS: "10.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    ENABLE_PREVIEWS: YES
+    TARGETED_DEVICE_FAMILY: "1"
+    GENERATE_INFOPLIST_FILE: YES
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  UAMClass:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      # Shared: modelos, servicios y capa de diseño (SwiftPM lo usa el target de Mac también)
+      - path: ../Sources/UAMClass/Models
+      - path: ../Sources/UAMClass/Design
+      - path: ../Sources/UAMClass/Utils
+      - path: ../Sources/UAMClass/App/AppState.swift
+
+      - path: ../Sources/UAMClass/Services/Keychain.swift
+      - path: ../Sources/UAMClass/Services/AuthService.swift
+      - path: ../Sources/UAMClass/Services/MoodleClient.swift
+      - path: ../Sources/UAMClass/Services/MoodleClient+Assign.swift
+      - path: ../Sources/UAMClass/Services/MoodleClient+Extras.swift
+      - path: ../Sources/UAMClass/Services/MoodleClient+Quiz.swift
+      - path: ../Sources/UAMClass/Services/ClassPortalClient.swift
+      - path: ../Sources/UAMClass/Services/AccountStore.swift
+      - path: ../Sources/UAMClass/Services/LocalStore.swift
+      - path: ../Sources/UAMClass/Services/NotificationScheduler.swift
+      - path: ../Sources/UAMClass/Services/APIAudit.swift
+      - path: ../Sources/UAMClass/Services/ChangeWatcher.swift
+      - path: ../Sources/UAMClass/Services/HTMLTree.swift
+      - path: ../Sources/UAMClass/Services/MoodleOpener.swift
+      - path: ../Sources/UAMClass/Services/LocalFileSearch.swift
+      - path: ../Sources/UAMClass/Services/OfflineCache.swift
+      - path: ../Sources/UAMClass/Services/PDFSummarizer.swift
+      - path: ../Sources/UAMClass/Services/SoundKit.swift
+      - path: ../Sources/UAMClass/Services/DownloadService.swift
+      - path: ../Sources/UAMClass/Services/DirectoryIndex.swift
+
+      - path: ../Sources/UAMClass/Views/LoginView.swift
+      - path: ../Sources/UAMClass/Views/OnboardingSheet.swift
+      - path: ../Sources/UAMClass/Views/PlatformPickerView.swift
+
+      - path: ../Sources/UAMClass/Views/Components
+        excludes:
+          - "SpotifyMiniPlayer.swift"
+          - "AccountSwitcher.swift"
+
+      - path: ../Sources/UAMClass/Views/Sections/DashboardView.swift
+      - path: ../Sources/UAMClass/Views/Sections/MateriasView.swift
+      - path: ../Sources/UAMClass/Views/Sections/CourseDetailView.swift
+      - path: ../Sources/UAMClass/Views/Sections/NotasView.swift
+      - path: ../Sources/UAMClass/Views/Sections/NotasAcademicasView.swift
+      - path: ../Sources/UAMClass/Views/Sections/HorarioView.swift
+      - path: ../Sources/UAMClass/Views/Sections/AsignacionesView.swift
+      - path: ../Sources/UAMClass/Views/Sections/AssignmentSheet.swift
+      - path: ../Sources/UAMClass/Views/Sections/MensajesView.swift
+      - path: ../Sources/UAMClass/Views/Sections/GradeScenario.swift
+      - path: ../Sources/UAMClass/Views/Sections/PersonalesView.swift
+      - path: ../Sources/UAMClass/Views/Sections/CourseDetail
+
+      # Sueltas del binario: Brand.swift las busca en Bundle.main en el target de Xcode
+      - path: ../Sources/UAMClass/Resources/uam-logo.png
+      - path: ../Sources/UAMClass/Resources/uam-mark.png
+
+      # Solo iOS: entrada de la app, navegación por pestañas, ajustes
+      - path: UAMClassiOS
+
+      - path: UAMClassiOS/Assets.xcassets
+
+    info:
+      path: Generated/Info.plist
+      properties:
+        CFBundleDisplayName: "UAM Class"
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        NSPhotoLibraryAddUsageDescription: "Para guardar archivos que descargues desde tus cursos."
+        ITSAppUsesNonExemptEncryption: false
+        CFBundleURLTypes:
+          - CFBundleURLSchemes: ["uamclass"]
+            CFBundleURLName: "com.kisito.uamclass"
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kisito.uamclass.ios
+        PRODUCT_NAME: "UAM Class"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+        DEVELOPMENT_ASSET_PATHS: ""
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: HQVD2Y42HM
+
+    dependencies:
+      - target: UAMClassWatch
+        embed: true
+
+  UAMClassWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: ../Sources/UAMClass/Models/ScheduleModels.swift
+      - path: UAMClassWatch
+
+    info:
+      path: Generated/WatchInfo.plist
+      properties:
+        CFBundleDisplayName: "UAM Class"
+        WKApplication: true
+        WKRunsIndependentlyOfCompanionApp: true
+        WKCompanionAppBundleIdentifier: com.kisito.uamclass.ios
+        UISupportedInterfaceOrientations: ["UIInterfaceOrientationPortrait"]
+        ITSAppUsesNonExemptEncryption: false
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kisito.uamclass.ios.watchkitapp
+        PRODUCT_NAME: "UAM Class"
+        SWIFT_EMIT_LOC_STRINGS: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: HQVD2Y42HM
+        SKIP_INSTALL: NO
+        TARGETED_DEVICE_FAMILY: "4"

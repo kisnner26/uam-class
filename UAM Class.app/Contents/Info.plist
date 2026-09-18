@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>UAM Class</string>
+    <key>CFBundleDisplayName</key>
+    <string>UAM Class</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.kisnner.uamclass</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleExecutable</key>
+    <string>UAMClass</string>
+    <key>CFBundleIconFile</key>
+    <string>UAMClass</string>
+    <key>CFBundleIconName</key>
+    <string>UAMClass</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>26.0</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>UAM Class controla la app de Spotify para mostrar y manejar lo que estás escuchando mientras estudiás.</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSSupportsAutomaticGraphicsSwitching</key>
+    <true/>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.education</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>© 2026 Kisnner</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.kisnner.uamclass.deeplink</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>uamclass</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

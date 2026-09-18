@@ -1,0 +1,20 @@
+.build/
+.swiftpm/
+Package.resolved
+DerivedData/
+*.xcodeproj
+*.xcworkspace
+.DS_Store
+
+# Nada de credenciales al repo
+*.env
+*.plist.local
+
+# Auditoría de seguridad contra sistemas reales de la UAM — nunca al repo público
+Tools/security-audit/
+audit-result.json
+audit-idor-grades-result.json
+
+# Artefactos locales de herramientas, no aportan al repo público
+graphify-out/
+.claude/settings.local.json
