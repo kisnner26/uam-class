@@ -108,8 +108,8 @@ function parseCookies(h) {
   });
   return o;
 }
-function getSession(req) {
-  const c = parseCookies(req.headers.cookie).s;
+function getSession(req, q) {
+  const c = parseCookies(req.headers.cookie).s || (q && q.s);
   if (!c) return null;
   const p = c.split('.');
   if (p.length !== 3 || !INSTANCES[p[0]] || !/^[0-9a-f]+$/i.test(p[1]) || !/^\d+$/.test(p[2])) return null;
@@ -117,7 +117,8 @@ function getSession(req) {
 }
 function cookie(req, value, maxAge) {
   const https = (req.headers['x-forwarded-proto'] || '').indexOf('https') === 0;
-  return 's=' + value + '; Path=/; Max-Age=' + maxAge + '; HttpOnly; SameSite=Lax' + (https ? '; Secure' : '');
+  // Sin SameSite/Max-Age: el WebKit de la 2DS los ignora o rompe; Expires sí lo entiende.
+  return 's=' + value + '; Path=/; Expires=' + new Date(Date.now() + maxAge * 1000).toUTCString() + (https ? '; Secure' : '');
 }
 
 // ---------- vistas ----------
@@ -460,14 +461,18 @@ async function handler(req, res) {
       try {
         const token = await login(inst, String(b.cif || '').trim(), String(b.pin || ''));
         const info = await client({ inst, token }).call('core_webservice_get_site_info');
-        return send(res, 302, '', { Location: '/', 'Set-Cookie': cookie(req, inst + '.' + token + '.' + info.userid, 2592000) });
+        const sv = inst + '.' + token + '.' + info.userid;
+        return send(res, 302, '', { Location: '/?s=' + sv, 'Set-Cookie': cookie(req, sv, 2592000) });
       } catch (e) {
         return send(res, 200, loginPage(e.message));
       }
     }
     if (path === '/logout') return send(res, 302, '', { Location: '/', 'Set-Cookie': cookie(req, '', 0) });
 
-    const sess = getSession(req);
+    const sess = getSession(req, q);
+    const viaUrl = sess && !parseCookies(req.headers.cookie).s;
+    const sv = viaUrl ? q.s : null;
+    const tag = (u) => u.replace(/^(\/(?!\/)[^#]*?)(#.*)?$/, (m, a, h) => a + (a.indexOf('?') < 0 ? '?' : '&') + 's=' + sv + (h || ''));
     if (!sess) return send(res, 200, loginPage());
 
     const key = req.method === 'POST' ? 'POST ' + path : path;
@@ -486,7 +491,11 @@ async function handler(req, res) {
       }
       throw e;
     }
-    if (out && out.redirect) return send(res, 302, '', { Location: out.redirect });
+    if (out && out.redirect) return send(res, 302, '', { Location: sv && out.redirect[0] === '/' ? tag(out.redirect) : out.redirect });
+    if (sv) {
+      out = out.replace(/(href|action)="(\/[^"]*)"/g, (m, a, u) => a + '="' + tag(u.replace(/&amp;/g, '&')).replace(/&/g, '&amp;') + '"')
+        .replace(/<form[^>]*>/g, (m) => m + '<input type="hidden" name="s" value="' + esc(sv) + '">');
+    }
     return send(res, 200, out);
   } catch (e) {
     return send(res, 500, page('Error', '<p class="err">Fallo interno.</p>', null));
