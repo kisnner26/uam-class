@@ -122,21 +122,40 @@ function cookie(req, value, maxAge) {
 }
 
 // ---------- vistas ----------
-const CSS = 'body{margin:0;padding:4px;background:#f4f1e8;color:#111;font:15px/1.35 sans-serif}' +
-  'h1{font-size:19px;margin:4px 0;padding:4px;background:#8b1a2b;color:#fff}' +
-  'h2{font-size:16px;margin:10px 0 4px;border-bottom:2px solid #8b1a2b}' +
-  'a{color:#0b3d91}.nav a,.btn{display:block;margin:4px 0;padding:10px 8px;background:#fff;border:2px solid #8b1a2b;color:#8b1a2b;font-weight:bold;text-decoration:none;text-align:center}' +
-  '.row{margin:4px 0;padding:6px;background:#fff;border:1px solid #bbb}.row b{display:block}' +
-  '.m{color:#555;font-size:13px}.err{padding:8px;background:#ffd9d9;border:2px solid #b00}.ok{padding:8px;background:#d9f5d9;border:2px solid #0a0}' +
-  'input,select,textarea{width:96%;font-size:16px;margin:3px 0;padding:6px}input[type=submit]{width:100%;padding:10px;background:#8b1a2b;color:#fff;border:0;font-weight:bold}' +
-  '.top{margin-bottom:4px}.top a{display:inline-block;padding:6px 8px;background:#8b1a2b;color:#fff;text-decoration:none;margin-right:3px}';
+// Degradado con las tres sintaxis que entiende el WebKit de 2011 (y uno sólido de respaldo).
+const g = (a, b) => 'background:' + a + ';background:-webkit-gradient(linear,0 0,0 100%,from(' + a + '),to(' + b + '));' +
+  'background:-webkit-linear-gradient(top,' + a + ',' + b + ');background:linear-gradient(' + a + ',' + b + ');';
+// Brillo "Aero/Wii": mitad superior clara, corte duro a la mitad.
+const gloss = (a, b, c, d) => 'background:' + c + ';background:-webkit-gradient(linear,0 0,0 100%,from(' + a + '),color-stop(.5,' + b + '),color-stop(.5,' + c + '),to(' + d + '));' +
+  'background:-webkit-linear-gradient(top,' + a + ',' + b + ' 50%,' + c + ' 50%,' + d + ');background:linear-gradient(' + a + ',' + b + ' 50%,' + c + ' 50%,' + d + ');';
+const R = (r) => '-webkit-border-radius:' + r + ';border-radius:' + r + ';';
+const SH = (v) => '-webkit-box-shadow:' + v + ';box-shadow:' + v + ';';
+
+const CSS = 'html{background:#dcdfe4}body{min-height:230px;margin:0;padding:0 5px 8px;color:#222;font:15px/1.35 sans-serif;' + g('#fdfdfd', '#dcdfe4') + '}' +
+  '.bar{margin:0 -5px 6px;padding:5px 6px 4px;border-bottom:1px solid #4a0c17;' + gloss('#c4475a', '#a3243a', '#8b1a2b', '#6d1220') + SH('0 2px 4px rgba(0,0,0,.35)') + '}' +
+  '.bar span{color:#fff;font-weight:bold;font-size:13px;text-shadow:0 1px 1px #000;letter-spacing:1px}' +
+  '.top{margin:0 0 6px;padding:3px;border:1px solid #b7bcc4;' + R('9px') + g('#ffffff', '#e4e7ec') + SH('inset 0 1px 0 #fff') + '}' +
+  '.top a{display:inline-block;padding:6px 9px;margin:1px;color:#5a1020;font-size:13px;font-weight:bold;text-decoration:none;border:1px solid #c9ccd2;text-shadow:0 1px 0 #fff;' + R('7px') + g('#ffffff', '#e9ebef') + '}' +
+  'h1{font-size:18px;margin:2px 0 8px;padding:8px 10px;color:#fff;text-shadow:0 -1px 0 #3d0710;border:1px solid #5c0f1b;' + R('10px') + gloss('#b23a4e', '#962036', '#7e1627', '#9a2238') + SH('0 2px 3px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.4)') + '}' +
+  'h2{font-size:14px;margin:12px 0 5px;padding:3px 8px;color:#fff;text-shadow:0 1px 0 #000;' + R('6px') + g('#7b8494', '#555d6b') + '}' +
+  'a{color:#0a4fb4}' +
+  '.nav a,.btn{display:block;margin:6px 0;padding:11px 8px;font-weight:bold;text-decoration:none;text-align:center;color:#6d1220;text-shadow:0 1px 0 #fff;border:1px solid #aab0b9;' + R('12px') + gloss('#ffffff', '#f3f4f6', '#e6e8ec', '#f4f5f7') + SH('0 2px 3px rgba(0,0,0,.25)') + '}' +
+  '.nav a:active,.btn:active{' + g('#d7dbe1', '#f5f6f8') + '}' +
+  '.row{margin:6px 0;padding:7px 8px;background:#fff;border:1px solid #c5c9cf;border-left:5px solid #8b1a2b;' + R('8px') + SH('0 1px 2px rgba(0,0,0,.18)') + '}.row b{display:block;color:#3a0a12}' +
+  '.m{color:#6b7280;font-size:12px}' +
+  '.err,.ok{padding:8px;font-weight:bold;' + R('8px') + '}.err{color:#7a0010;border:1px solid #d6545e;' + g('#ffe9eb', '#ffc9ce') + '}.ok{color:#0b5a17;border:1px solid #5ab567;' + g('#eafbe8', '#c8f0c4') + '}' +
+  'label{display:block;margin-top:6px;font-weight:bold;font-size:13px;color:#444}' +
+  'input,select,textarea{width:94%;font-size:16px;margin:3px 0;padding:6px;border:1px solid #9aa1ab;background:#fff;' + R('6px') + SH('inset 0 1px 2px rgba(0,0,0,.15)') + '}' +
+  'input[type=submit]{width:100%;margin-top:8px;padding:11px;color:#fff;font-weight:bold;text-shadow:0 -1px 0 #3d0710;border:1px solid #5c0f1b;' + R('12px') + gloss('#c4475a', '#a3243a', '#8b1a2b', '#a12538') + SH('0 2px 3px rgba(0,0,0,.3)') + '}' +
+  '.foot{margin-top:12px;text-align:center;color:#8a8f98;font-size:11px;text-shadow:0 1px 0 #fff}';
 
 function page(title, body, sess) {
   const top = '<div class="top"><a href="/">Inicio</a><a href="/courses">Cursos</a><a href="/msgs">Mensajes</a>' +
     (sess ? '<a href="/logout">Salir</a>' : '') + '</div>';
   return '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>' + esc(title) + '</title>' +
     '<meta name="viewport" content="width=320"><style>' + CSS + '</style></head><body>' +
-    (sess ? top : '') + '<h1>' + esc(title) + '</h1>' + body + '</body></html>';
+    '<div class="bar"><span>UAM VIRTUAL</span></div>' + (sess ? top : '') + '<h1>' + esc(title) + '</h1>' + body +
+    '<div class="foot">Universidad Americana &middot; edición 2DS</div></body></html>';
 }
 const row = (inner) => '<div class="row">' + inner + '</div>';
 const link = (href, label) => '<a href="' + esc(href) + '">' + esc(label) + '</a>';
