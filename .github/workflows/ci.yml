@@ -1,0 +1,14 @@
+name: Quiz parser checks
+on:
+  push:
+    branches: [master]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  quiz-parser:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Moodle quiz parser fixtures
+        run: bash Tools/check-quiz-parser.sh
